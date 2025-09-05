@@ -1,0 +1,889 @@
+{
+  "_comment": [
+    "File lưu các câu hỏi Knowledge base của chatbot, chia theo phân loại",
+    "Và có các ngưỡng đi theo để đảm bảo tính trực quan hơn",
+    "Có tổng cộng 45 cặp câu hỏi-trả lời hiện tại"
+  ],
+  "metadata": {
+    "version": "1.0",
+    "last_updated": "2024-08-31",
+    "description": "Railway knowledge base for Vietnamese trains",
+    "total_entries": 45,
+    "languages": [
+      "vi",
+      "en"
+    ],
+    "categories": [
+      "booking",
+      "schedule",
+      "pricing",
+      "stations",
+      "services",
+      "cancellation",
+      "support"
+    ]
+  },
+  "knowledge_base": [
+    {
+      "id": 1,
+      "question": "Làm thế nào để đặt vé tàu?",
+      "answer": "Bạn có thể đặt vé tàu qua: 1) Website chính thức dsvn.vn, 2) Ứng dụng di động VR (Vietnam Railway), 3) Tại ga tàu, 4) Qua điện thoại 1900 0109. Cần chuẩn bị CMND/CCCD khi đặt vé.",
+      "category": "booking",
+      "keywords": [
+        "đặt vé",
+        "booking",
+        "mua vé",
+        "online",
+        "website",
+        "app"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 2,
+      "question": "Giá vé tàu từ Hà Nội đi TP.HCM bao nhiêu?",
+      "answer": "Giá vé tàu Hà Nội - TP.HCM: Ghế cứng 480.000đ, Ghế mềm 600.000đ, Giường nằm khoang 6 từ 850.000đ, Giường nằm khoang 4 từ 1.200.000đ, Giường nằm VIP từ 1.500.000đ. Giá có thể thay đổi theo mùa.",
+      "category": "pricing",
+      "keywords": [
+        "giá vé",
+        "hà nội",
+        "tp.hcm",
+        "sài gòn",
+        "pricing",
+        "cost"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 3,
+      "question": "Tàu từ Hà Nội đi TP.HCM mất bao lâu?",
+      "answer": "Thời gian di chuyển từ Hà Nội đến TP.HCM khoảng 30-34 tiếng tùy tàu. Tàu SE1/SE3 (Thống Nhất): ~34h, Tàu SE19/SE21: ~30h. Tàu nhanh nhất hiện tại mất khoảng 29 tiếng 30 phút.",
+      "category": "schedule",
+      "keywords": [
+        "thời gian",
+        "bao lâu",
+        "duration",
+        "hà nội",
+        "tp.hcm",
+        "travel time"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 4,
+      "question": "Có những loại chỗ ngồi nào trên tàu?",
+      "answer": "Tàu hỏa có các loại chỗ: 1) Ghế cứng (NC): Ghế gỗ, giá rẻ nhất, 2) Ghế mềm (NM): Ghế da, thoải mái hơn, 3) Giường nằm cứng khoang 6 (AC6): 6 giường/khoang, 4) Giường nằm mềm khoang 4 (AC4): 4 giường/khoang, 5) VIP: 2 giường/khoang, cao cấp nhất.",
+      "category": "services",
+      "keywords": [
+        "loại chỗ",
+        "ghế",
+        "giường nằm",
+        "seat types",
+        "compartment"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 5,
+      "question": "Làm thế nào để hủy vé tàu?",
+      "answer": "Hủy vé tàu: 1) Online qua website/app nơi đặt vé, 2) Tại ga tàu với CMND và vé, 3) Qua hotline 1900 0109. Phí hủy: Trước 24h: 20% giá vé, Từ 4-24h: 30%, Dưới 4h: 40%. Vé điện tử hủy dễ hơn vé giấy.",
+      "category": "cancellation",
+      "keywords": [
+        "hủy vé",
+        "cancel",
+        "hoàn tiền",
+        "refund",
+        "phí hủy"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 6,
+      "question": "Ga Hà Nội ở đâu?",
+      "answer": "Ga Hà Nội (Ga chính) địa chỉ: 120 Lê Duẩn, Hoàn Kiếm, Hà Nội. Cách Hồ Gươm khoảng 2km. Có thể đi bằng taxi, bus số 2, 32, 49 hoặc Grab. Ga có bãi đậu xe và nhiều dịch vụ tiện ích.",
+      "category": "stations",
+      "keywords": [
+        "ga hà nội",
+        "địa chỉ",
+        "hanoi station",
+        "location",
+        "lê duẩn"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 7,
+      "question": "Ga Sài Gòn ở đâu?",
+      "answer": "Ga Sài Gòn địa chỉ: 1 Nguyễn Thông, Quận 3, TP.HCM. Cách trung tâm Q1 khoảng 3km. Có thể đi bằng taxi, bus số 152, xe ôm hoặc Grab. Ga có nhiều cửa hàng ăn uống và dịch vụ hỗ trợ hành khách.",
+      "category": "stations",
+      "keywords": [
+        "ga sài gòn",
+        "ga tp.hcm",
+        "địa chỉ",
+        "saigon station",
+        "nguyễn thông"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 8,
+      "question": "Tàu có wifi không?",
+      "answer": "Hầu hết tàu hiện đại (SE1, SE3, SE19, SE21) đều có wifi miễn phí. Tốc độ wifi ổn định ở các ga lớn, có thể chậm khi qua vùng núi. Một số tàu cũ chưa có wifi. Nên mang sẵn 4G để backup.",
+      "category": "services",
+      "keywords": [
+        "wifi",
+        "internet",
+        "mạng",
+        "online",
+        "connectivity"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 9,
+      "question": "Tàu có điều hòa không?",
+      "answer": "Tất cả tàu Thống Nhất (SE1-SE8) và tàu nhanh đều có điều hòa. Ghế cứng có quạt trần hoặc điều hòa nhẹ. Giường nằm và ghế mềm có điều hòa đầy đủ. Nên mang áo khoác vì có thể lạnh.",
+      "category": "services",
+      "keywords": [
+        "điều hòa",
+        "air conditioning",
+        "AC",
+        "lạnh",
+        "nhiệt độ"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 10,
+      "question": "Có thể mang thú cưng lên tàu không?",
+      "answer": "Có thể mang thú cưng nhỏ (dưới 20kg) lên tàu với điều kiện: 1) Có giấy tờ thú y đầy đủ, 2) Đặt trong lồng/túi vận chuyển, 3) Mua vé cho thú cưng (50% giá vé người), 4) Thông báo khi đặt vé. Không áp dụng cho ghế mềm và một số toa VIP.",
+      "category": "services",
+      "keywords": [
+        "thú cưng",
+        "pet",
+        "chó",
+        "mèo",
+        "animals",
+        "lồng"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 11,
+      "question": "How to book train tickets?",
+      "answer": "You can book train tickets via: 1) Official website dsvn.vn, 2) VR mobile app (Vietnam Railway), 3) At train stations, 4) Phone hotline 1900 0109. You need ID card (CMND/CCCD) for booking.",
+      "category": "booking",
+      "keywords": [
+        "book",
+        "tickets",
+        "online",
+        "website",
+        "app",
+        "reservation"
+      ],
+      "language": "en",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 12,
+      "question": "Train ticket prices Hanoi to Ho Chi Minh City?",
+      "answer": "Hanoi - Ho Chi Minh train prices: Hard seat 480,000 VND, Soft seat 600,000 VND, 6-berth sleeper from 850,000 VND, 4-berth sleeper from 1,200,000 VND, VIP sleeper from 1,500,000 VND. Prices may vary by season.",
+      "category": "pricing",
+      "keywords": [
+        "price",
+        "cost",
+        "hanoi",
+        "ho chi minh",
+        "saigon",
+        "fare"
+      ],
+      "language": "en",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 13,
+      "question": "Lịch tàu Hà Nội - Đà Nẵng?",
+      "answer": "Tàu Hà Nội - Đà Nẵng: SE1 (19:20-10:17+1), SE3 (06:00-20:40), SE7 (15:25-05:58+1), SE19 (21:10-10:05+1). Thời gian ~14-16 tiếng. Nên đặt trước 3-7 ngày để có chỗ tốt.",
+      "category": "schedule",
+      "keywords": [
+        "lịch tàu",
+        "hà nội",
+        "đà nẵng",
+        "schedule",
+        "timetable",
+        "SE1",
+        "SE3"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 14,
+      "question": "Có đồ ăn trên tàu không?",
+      "answer": "Trên tàu có: 1) Toa ăn (diner car) phục vụ cơm, phở, đồ uống, 2) Nhân viên bán đồ ăn đi qua từng toa, 3) Cửa hàng tiện lợi tại một số ga lớn. Giá hơi cao, nên mang sẵn đồ ăn nhẹ. Có nước sôi miễn phí.",
+      "category": "services",
+      "keywords": [
+        "đồ ăn",
+        "food",
+        "toa ăn",
+        "restaurant",
+        "meal",
+        "nước"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 15,
+      "question": "Hành lý được mang bao nhiêu kg?",
+      "answer": "Hành lý miễn phí: 20kg/người cho ghế cứng, 30kg cho ghế mềm và giường nằm. Hành lý vượt mức tính phí 15.000đ/kg. Không mang: chất nổ, hóa chất độc hại, vũ khí. Có thể mang laptop, điện thoại, thuốc cá nhân.",
+      "category": "services",
+      "keywords": [
+        "hành lý",
+        "baggage",
+        "luggage",
+        "kg",
+        "weight",
+        "limit"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 16,
+      "question": "Tàu có thường xuyên đúng giờ không?",
+      "answer": "Tàu Việt Nam thường đúng giờ 70-80% trường hợp. Delay phổ biến 15-30 phút do: thời tiết xấu, sự cố kỹ thuật, ưu tiên tàu hàng. Tàu SE (Thống Nhất) đúng giờ hơn tàu địa phương. Nên có dự phòng 1-2 tiếng cho kế hoạch tiếp theo.",
+      "category": "schedule",
+      "keywords": [
+        "đúng giờ",
+        "delay",
+        "late",
+        "punctual",
+        "on time",
+        "trễ"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 17,
+      "question": "Có thể đổi vé tàu không?",
+      "answer": "Có thể đổi vé tàu với điều kiện: 1) Trước giờ tàu chạy ít nhất 24h, 2) Đổi sang tàu cùng hạng hoặc cao hơn, 3) Phí đổi vé 40.000-80.000đ tùy loại. Đổi tại ga hoặc online nếu mua vé điện tử. Không được đổi trong 24h cuối.",
+      "category": "booking",
+      "keywords": [
+        "đổi vé",
+        "change ticket",
+        "modify",
+        "reschedule",
+        "phí đổi"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 18,
+      "question": "Ga nào ở Hà Nội?",
+      "answer": "Hà Nội có 2 ga chính: 1) Ga Hà Nội (120 Lê Duẩn) - ga chính cho tàu xa, 2) Ga Long Biên - tàu đi các tỉnh Bắc Bộ. Ga Hà Nội phục vụ các tuyến: Nam Định, Vinh, Huế, Đà Nẵng, Nha Trang, TP.HCM.",
+      "category": "stations",
+      "keywords": [
+        "ga hà nội",
+        "hanoi station",
+        "ga long biên",
+        "stations",
+        "địa điểm"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 19,
+      "question": "Khuyến mãi vé tàu khi nào?",
+      "answer": "Khuyến mãi vé tàu thường có: 1) Tết Nguyên Đán (giảm 10-20%), 2) Mùa hè học sinh (tháng 6-8), 3) Người cao tuổi trên 60 tuổi giảm 15%, 4) Học sinh-sinh viên giảm 10% với thẻ, 5) Đặt vé nhóm >10 người giảm 5-10%. Theo dõi website để biết khuyến mãi mới.",
+      "category": "pricing",
+      "keywords": [
+        "khuyến mãi",
+        "discount",
+        "promotion",
+        "giảm giá",
+        "học sinh",
+        "người cao tuổi"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 20,
+      "question": "Check-in tàu như thế nào?",
+      "answer": "Check-in tàu: 1) Có mặt tại ga trước 30 phút, 2) Mang vé và CMND/CCCD, 3) Qua cổng kiểm soát, 4) Tìm toa và số ghế theo vé, 5) Nhân viên tàu sẽ kiểm tra vé khi lên tàu. Vé điện tử chỉ cần show mã QR trên điện thoại.",
+      "category": "booking",
+      "keywords": [
+        "check in",
+        "lên tàu",
+        "boarding",
+        "ga",
+        "kiểm tra vé",
+        "QR"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 21,
+      "question": "Tàu có toilet không?",
+      "answer": "Tất cả tàu đều có toilet ở cuối mỗi toa. Toilet trên tàu có: nước, xà phòng, giấy vệ sinh. Tàu mới có toilet tây, tàu cũ có toilet squat. Giữ vệ sinh chung và mang theo giấy ướt để đảm bảo.",
+      "category": "services",
+      "keywords": [
+        "toilet",
+        "wc",
+        "nhà vệ sinh",
+        "bathroom",
+        "restroom"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 22,
+      "question": "Tàu có an toàn không?",
+      "answer": "Tàu hỏa Việt Nam tương đối an toàn với tỷ lệ tai nạn thấp. Lưu ý: 1) Giữ đồ đạc cẩn thận, 2) Khóa cửa khoang khi ngủ, 3) Không để đầu/tay ra ngoài cửa sổ, 4) Cẩn thận khi qua đường ray tại ga. Có nhân viên an ninh và cảnh sát đường sắt tuần tra.",
+      "category": "support",
+      "keywords": [
+        "an toàn",
+        "safety",
+        "security",
+        "tai nạn",
+        "cẩn thận"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 23,
+      "question": "Đặt vé online có an toàn không?",
+      "answer": "Đặt vé online an toàn khi dùng website chính thức: dsvn.vn hoặc app VR. Tránh website giả mạo. Thanh toán qua: Internet Banking, ví điện tử (MoMo, ZaloPay), thẻ ATM. Luôn check email xác nhận và lưu mã đặt vé.",
+      "category": "booking",
+      "keywords": [
+        "đặt vé online",
+        "an toàn",
+        "website",
+        "payment",
+        "thanh toán"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 24,
+      "question": "Tàu đi Nha Trang từ Hà Nội?",
+      "answer": "Tàu Hà Nội - Nha Trang: SE3 (06:00-04:40+1), SE1 (19:20-16:17+1), SE7 (15:25-13:05+1). Thời gian ~22-23 tiếng. Giá từ 650.000đ (ghế cứng) đến 1.800.000đ (VIP). Nha Trang là điểm dừng, không phải ga cuối.",
+      "category": "schedule",
+      "keywords": [
+        "nha trang",
+        "hà nội",
+        "SE1",
+        "SE3",
+        "lịch tàu",
+        "schedule"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 25,
+      "question": "Trẻ em có cần mua vé không?",
+      "answer": "Quy định vé cho trẻ em: 1) Dưới 6 tuổi: Miễn phí nếu ngồi cùng người lớn, 2) Từ 6-10 tuổi: Giảm 25% giá vé người lớn, 3) Trên 10 tuổi: Mua vé full giá. Cần mang giấy khai sinh hoặc CMND để chứng minh tuổi. Trẻ nhỏ cần có người lớn đi cùng.",
+      "category": "pricing",
+      "keywords": [
+        "trẻ em",
+        "children",
+        "kids",
+        "giảm giá",
+        "miễn phí",
+        "age"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 26,
+      "question": "Tàu có chỗ sạc điện thoại không?",
+      "answer": "Tàu hiện đại có ổ cắm điện 220V ở: 1) Mỗi khoang giường nằm có 1-2 ổ, 2) Ghế mềm có ổ cắm chung, 3) Toa ăn có nhiều ổ sạc. Tàu cũ ít ổ cắm hơn. Nên mang sạc dự phòng (power bank) để đảm bảo.",
+      "category": "services",
+      "keywords": [
+        "sạc điện thoại",
+        "charging",
+        "power",
+        "electricity",
+        "ổ cắm"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 27,
+      "question": "Mua vé tàu ở đâu tại ga?",
+      "answer": "Tại ga có thể mua vé ở: 1) Quầy bán vé chính thức (official counter), 2) Máy bán vé tự động (có tại ga lớn), 3) Phòng dịch vụ khách hàng. Tránh mua vé từ người lạ. Mang CMND và tiền mặt hoặc thẻ ATM. Giờ bán vé: 4:00-22:00.",
+      "category": "booking",
+      "keywords": [
+        "mua vé tại ga",
+        "quầy vé",
+        "station ticket",
+        "counter",
+        "máy bán vé"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 28,
+      "question": "Tàu có bị hoãn vì thời tiết không?",
+      "answer": "Tàu có thể bị hoãn/dừng vì: 1) Mưa bão lớn, ngập lụt, 2) Sạt lở đất ở miền núi, 3) Thời tiết cực xấu. Thường thông báo trước 2-4 tiếng. Check thông tin tại website, app hoặc gọi hotline. Nếu tàu bị hủy do thời tiết, được hoàn tiền 100%.",
+      "category": "schedule",
+      "keywords": [
+        "hoãn tàu",
+        "thời tiết",
+        "delay",
+        "weather",
+        "mưa bão",
+        "cancel"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 29,
+      "question": "Làm gì khi mất vé tàu?",
+      "answer": "Khi mất vé: 1) Báo ngay cho nhân viên ga/tàu, 2) Mang CMND để tra cứu thông tin đặt vé, 3) Nếu có mã đặt vé hoặc email xác nhận thì dễ giải quyết, 4) Có thể phải mua vé mới và làm thủ tục hoàn tiền sau. Vé điện tử ít bị mất hơn vé giấy.",
+      "category": "support",
+      "keywords": [
+        "mất vé",
+        "lost ticket",
+        "ticket lost",
+        "CMND",
+        "tra cứu"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 30,
+      "question": "Tàu đêm có chăn gối không?",
+      "answer": "Giường nằm có sẵn: 1) Đệm, chăn, gối (clean), 2) Ga trải giường, 3) Màn che riêng tư (một số toa). Chất lượng tùy loại toa: VIP/AC4 sạch sẽ hơn AC6. Nên mang thêm khăn mặt và có thể mang gối riêng nếu muốn thoải mái hơn.",
+      "category": "services",
+      "keywords": [
+        "giường nằm",
+        "chăn gối",
+        "bedding",
+        "pillow",
+        "blanket",
+        "sleeper"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 31,
+      "question": "Hotline hỗ trợ khách hàng?",
+      "answer": "Hotline chính thức: 1900 0109 (24/7). Email: cskh@dsvn.vn. Fanpage: Vietnam Railway. Hỗ trợ: đặt vé, thay đổi, hủy vé, thông tin lịch trình, khiếu nại. Cuộc gọi tính phí theo nhà mạng. Nên gọi sáng sớm hoặc tối muộn để ít đông.",
+      "category": "support",
+      "keywords": [
+        "hotline",
+        "customer service",
+        "support",
+        "1900 0109",
+        "help"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.9
+    },
+    {
+      "id": 32,
+      "question": "Tàu có điện thoại bàn không?",
+      "answer": "Tàu hiện tại không còn điện thoại bàn. Sử dụng điện thoại di động với: 1) Sóng 3G/4G (có thể yếu ở vùng núi), 2) Wifi tàu (nếu có), 3) Điện thoại vệ tinh khẩn cấp của nhân viên tàu. Khu vực có sóng tốt: ga tàu, thành phố lớn.",
+      "category": "services",
+      "keywords": [
+        "điện thoại",
+        "phone",
+        "signal",
+        "3G",
+        "4G",
+        "communication"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 33,
+      "question": "Tàu đi Đà Lạt có không?",
+      "answer": "Hiện tại không có tàu trực tiếp đến Đà Lạt. Cách đi: 1) Tàu đến Nha Trang rồi xe bus (~3.5h), 2) Tàu đến Phan Rang rồi xe bus (~2.5h). Có tour tàu + xe kết hợp. Trước đây có đường sắt răng cưa Đà Lạt nhưng hiện chỉ phục vụ du lịch đoạn ngắn.",
+      "category": "schedule",
+      "keywords": [
+        "đà lạt",
+        "dalat",
+        "nha trang",
+        "phan rang",
+        "không có tàu"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 34,
+      "question": "Vé tàu có thể thanh toán bằng gì?",
+      "answer": "Thanh toán vé tàu: 1) Tiền mặt (tại ga), 2) Thẻ ATM/Credit card, 3) Internet Banking, 4) Ví điện tử: MoMo, ZaloPay, ViettelPay, 5) QR Pay (VietQR). Online hỗ trợ đầy đủ, tại ga chủ yếu tiền mặt và thẻ. Không nhận PayPal hay crypto.",
+      "category": "booking",
+      "keywords": [
+        "thanh toán",
+        "payment",
+        "momo",
+        "atm",
+        "cash",
+        "card"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 35,
+      "question": "Train schedule Hanoi to Da Nang?",
+      "answer": "Hanoi - Da Nang trains: SE1 (19:20-10:17+1), SE3 (06:00-20:40), SE7 (15:25-05:58+1), SE19 (21:10-10:05+1). Journey time ~14-16 hours. Book 3-7 days in advance for better seats.",
+      "category": "schedule",
+      "keywords": [
+        "schedule",
+        "hanoi",
+        "da nang",
+        "timetable",
+        "SE1",
+        "SE3"
+      ],
+      "language": "en",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 36,
+      "question": "What food is available on train?",
+      "answer": "Food on trains: 1) Dining car with Vietnamese meals, pho, drinks, 2) Food vendors walking through carriages, 3) Convenience stores at major stations. Prices are higher than outside. Bring snacks. Free hot water available.",
+      "category": "services",
+      "keywords": [
+        "food",
+        "dining",
+        "restaurant",
+        "meal",
+        "pho",
+        "vendors"
+      ],
+      "language": "en",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 37,
+      "question": "Tàu có bán đồ lưu niệm không?",
+      "answer": "Trên tàu có bán một số đồ lưu niệm đơn giản: postcard, móc khóa đường sắt, tem. Tại các ga lớn (Hà Nội, TP.HCM, Đà Nẵng) có nhiều shop bán đặc sản địa phương. Giá hợp lý hơn so với khu du lịch.",
+      "category": "services",
+      "keywords": [
+        "đồ lưu niệm",
+        "souvenir",
+        "shop",
+        "postcard",
+        "móc khóa"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.6
+    },
+    {
+      "id": 38,
+      "question": "Có được hút thuốc trên tàu không?",
+      "answer": "NGHIÊM CẤM hút thuốc trên tàu. Chỉ được hút tại: 1) Khu vực chỉ định ở một số ga tàu, 2) Bên ngoài tàu khi tàu dừng lâu (>10 phút). Vi phạm có thể bị phạt tiền hoặc đuổi khỏi tàu. Tàu có detector khói tự động.",
+      "category": "services",
+      "keywords": [
+        "hút thuốc",
+        "smoking",
+        "no smoking",
+        "nghiêm cấm",
+        "detector"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.9
+    },
+    {
+      "id": 39,
+      "question": "Giá vé tàu Hà Nội - Huế?",
+      "answer": "Giá vé Hà Nội - Huế: Ghế cứng 280.000đ, Ghế mềm 350.000đ, Giường nằm khoang 6 từ 480.000đ, Khoang 4 từ 650.000đ, VIP từ 850.000đ. Thời gian ~12-14 tiếng. Huế là ga trung gian phổ biến, dễ có chỗ hơn TP.HCM.",
+      "category": "pricing",
+      "keywords": [
+        "giá vé",
+        "hà nội",
+        "huế",
+        "hue",
+        "pricing",
+        "cost"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 40,
+      "question": "Có thể mang xe đạp lên tàu không?",
+      "answer": "Có thể mang xe đạp với điều kiện: 1) Tháo bánh xe và đóng gói cẩn thận, 2) Kích thước không quá 1.5m x 1m, 3) Mua vé hành lý (khoảng 100.000-200.000đ), 4) Để ở toa hành lý hoặc khu vực chỉ định. Xe máy không được phép.",
+      "category": "services",
+      "keywords": [
+        "xe đạp",
+        "bicycle",
+        "bike",
+        "hành lý",
+        "transport"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 41,
+      "question": "Tàu có camera an ninh không?",
+      "answer": "Tàu hiện đại có hệ thống camera an ninh tại: 1) Lối đi chung, 2) Cửa ra vào toa, 3) Toa ăn. Không có camera trong khoang riêng tư. Có nhân viên an ninh và cảnh sát đường sắt tuần tra. Báo cáo sự cố cho nhân viên tàu.",
+      "category": "support",
+      "keywords": [
+        "camera",
+        "an ninh",
+        "security",
+        "safety",
+        "surveillance"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 42,
+      "question": "Đặt chỗ nhóm lớn như thế nào?",
+      "answer": "Đặt vé nhóm (>10 người): 1) Liên hệ trực tiếp ga hoặc hotline 1900 0109, 2) Đặt trước ít nhất 15 ngày, 3) Có thể được giảm giá 5-10%, 4) Ưu tiên sắp xếp chỗ ngồi gần nhau. Cần danh sách tên và CMND của tất cả thành viên.",
+      "category": "booking",
+      "keywords": [
+        "nhóm lớn",
+        "group booking",
+        "đặt nhóm",
+        "discount",
+        "10 người"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.8
+    },
+    {
+      "id": 43,
+      "question": "Tàu có đúng lịch trình không?",
+      "answer": "Lịch trình tàu cập nhật thường xuyên. Check: 1) Website dsvn.vn mục 'Tra cứu', 2) App VR, 3) Hotline 1900 0109, 4) Bảng thông báo tại ga. Tàu có thể thay đổi giờ vì: bảo trì đường ray, điều chỉnh lịch trình. Luôn check trước 1 ngày.",
+      "category": "schedule",
+      "keywords": [
+        "lịch trình",
+        "schedule",
+        "tra cứu",
+        "check",
+        "update"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.7
+    },
+    {
+      "id": 44,
+      "question": "Giấy tờ cần thiết khi đi tàu?",
+      "answer": "Giấy tờ bắt buộc: 1) CMND/CCCD/Passport (bản gốc), 2) Vé tàu (giấy hoặc điện tử), 3) Trẻ em: Giấy khai sinh hoặc CMND. Không cần: Bằng lái xe, thẻ BHYT. Ngoại quốc cần passport. Giấy tờ phải còn hạn và rõ ràng.",
+      "category": "booking",
+      "keywords": [
+        "giấy tờ",
+        "CMND",
+        "CCCD",
+        "passport",
+        "documents",
+        "ID"
+      ],
+      "language": "vi",
+      "confidence_threshold": 0.9
+    },
+    {
+      "id": 45,
+      "question": "Train safety and security measures?",
+      "answer": "Vietnamese trains are relatively safe with low accident rates. Safety tips: 1) Keep belongings secure, 2) Lock compartment when sleeping, 3) Don't lean out windows, 4) Be careful around tracks. Security includes railway police patrols and CCTV in modern trains.",
+      "category": "support",
+      "keywords": [
+        "safety",
+        "security",
+        "measures",
+        "police",
+        "CCTV",
+        "tips"
+      ],
+      "language": "en",
+      "confidence_threshold": 0.7
+    }
+  ],
+  "railway_routes": [
+    {
+      "route_name": "Hà Nội - TP.HCM",
+      "distance_km": 1726,
+      "journey_time": "29-34 hours",
+      "trains": [
+        "SE1",
+        "SE2",
+        "SE3",
+        "SE4",
+        "SE19",
+        "SE20",
+        "SE21",
+        "SE22"
+      ],
+      "major_stops": [
+        "Hà Nội",
+        "Nam Định",
+        "Vinh",
+        "Huế",
+        "Đà Nẵng",
+        "Quy Nhon",
+        "Nha Trang",
+        "TP.HCM"
+      ],
+      "frequency": "4 trains per day each direction"
+    },
+    {
+      "route_name": "Hà Nội - Lào Cai",
+      "distance_km": 296,
+      "journey_time": "8-10 hours",
+      "trains": [
+        "SP1",
+        "SP2",
+        "SP3",
+        "SP4"
+      ],
+      "major_stops": [
+        "Hà Nội",
+        "Yên Bái",
+        "Lào Cai"
+      ],
+      "frequency": "2 trains per day each direction"
+    },
+    {
+      "route_name": "Hà Nội - Hải Phòng",
+      "distance_km": 102,
+      "journey_time": "2.5-3 hours",
+      "trains": [
+        "HP1",
+        "HP2",
+        "HP3",
+        "HP4"
+      ],
+      "major_stops": [
+        "Hà Nội",
+        "Gia Lâm",
+        "Hải Dương",
+        "Hải Phòng"
+      ],
+      "frequency": "4 trains per day each direction"
+    }
+  ],
+  "train_types": [
+    {
+      "train_code": "SE",
+      "name": "Thống Nhất",
+      "description": "Tàu chính tuyến Hà Nội - TP.HCM",
+      "speed": "Medium speed",
+      "comfort": "Standard to High",
+      "services": [
+        "AC",
+        "Dining car",
+        "WiFi",
+        "Power outlets"
+      ]
+    },
+    {
+      "train_code": "SP",
+      "name": "Sapa Express",
+      "description": "Tàu đi Lào Cai (Sapa)",
+      "speed": "Medium speed",
+      "comfort": "Standard",
+      "services": [
+        "AC",
+        "Basic dining"
+      ]
+    },
+    {
+      "train_code": "HP",
+      "name": "Hải Phòng Express",
+      "description": "Tàu đi Hải Phòng",
+      "speed": "Fast",
+      "comfort": "Standard",
+      "services": [
+        "AC",
+        "Snack service"
+      ]
+    }
+  ],
+  "stations": [
+    {
+      "name": "Ga Hà Nội",
+      "address": "120 Lê Duẩn, Hoàn Kiếm, Hà Nội",
+      "phone": "024 3942 3697",
+      "services": [
+        "Ticket office",
+        "Waiting room",
+        "Restaurant",
+        "ATM",
+        "Parking"
+      ],
+      "operating_hours": "04:00 - 22:00"
+    },
+    {
+      "name": "Ga Sài Gòn",
+      "address": "1 Nguyễn Thông, Quận 3, TP.HCM",
+      "phone": "028 3931 8952",
+      "services": [
+        "Ticket office",
+        "Waiting room",
+        "Restaurant",
+        "ATM",
+        "Parking",
+        "Taxi stand"
+      ],
+      "operating_hours": "04:00 - 22:00"
+    },
+    {
+      "name": "Ga Đà Nẵng",
+      "address": "791 Hải Phòng, Thanh Khê, Đà Nẵng",
+      "phone": "0236 3821 175",
+      "services": [
+        "Ticket office",
+        "Waiting room",
+        "Snack bar",
+        "ATM"
+      ],
+      "operating_hours": "04:30 - 21:30"
+    }
+  ],
+  "common_questions": [
+    "Làm thế nào để đặt vé tàu?",
+    "Giá vé tàu bao nhiêu?",
+    "Tàu có wifi không?",
+    "Có thể hủy vé không?",
+    "Lịch tàu như thế nào?",
+    "Ga ở đâu?",
+    "Có đồ ăn trên tàu không?",
+    "Hành lý mang được bao nhiêu?",
+    "Trẻ em có cần vé không?",
+    "Hotline hỗ trợ là gì?"
+  ],
+  "categories_description": {
+    "booking": "Đặt vé, mua vé, thay đổi vé, check-in",
+    "schedule": "Lịch trình tàu, thời gian, duration",
+    "pricing": "Giá vé, khuyến mãi, phí phụ thu",
+    "stations": "Thông tin ga tàu, địa chỉ, dịch vụ",
+    "services": "Dịch vụ trên tàu, tiện ích, comfort",
+    "cancellation": "Hủy vé, hoàn tiền, thay đổi",
+    "support": "Hỗ trợ khách hàng, khiếu nại, emergency"
+  }
+}
