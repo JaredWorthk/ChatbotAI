@@ -6,11 +6,21 @@ Handles search, retrieval and matching of railway-related questions and answers
 import json
 import re
 import os
+import time
 from typing import List, Dict, Tuple, Optional, Any
 from difflib import SequenceMatcher
 import unicodedata
 from collections import defaultdict
 import math
+
+# Try to import fuzzywuzzy for better fuzzy search
+try:
+    from fuzzywuzzy import fuzz
+
+    FUZZYWUZZY_AVAILABLE = True
+except ImportError:
+    FUZZYWUZZY_AVAILABLE = False
+    print("💡 Tip: Install fuzzywuzzy for better fuzzy search: pip install fuzzywuzzy")
 
 
 class RailwayKnowledgeBase:
@@ -26,71 +36,121 @@ class RailwayKnowledgeBase:
         Args:
             data_file_path: Path to railway_data.json file
         """
-        self.data_file_path = "D:/for IT/PersonalProject/PythonProject/RailwayAI/app/data/railway_data.json"
+        # Relative path - more portable than absolute
+        default_path = os.path.join("data", "railway_data.json")
+        self.data_file_path = "D:/for IT/PersonalProject/PythonProject/RailwayAI/app/data/railway_data.json" or default_path
         self.knowledge_data = {}
         self.questions = []
-        self.categories = {}
-        self.keyword_index = defaultdict(list)
-        self.language_index = {"vi": [], "en": []}
+        self.categories = set()
+
+        # Optimized indexes for O(1) lookups
+        self.keyword_index = defaultdict(list)  # keyword -> [question_indices]
+        self.id_index = {}  # id -> question_dict (O(1) lookup)
+        self.category_index = defaultdict(list)  # category -> [question_dicts] (O(1) lookup)
+        self.language_index = defaultdict(list)  # language -> [question_indices]
+
+        # TF-IDF related
+        self.keyword_document_frequency = defaultdict(int)  # keyword -> document count
+        self.total_documents = 0
+
+        # Dynamic category keywords (auto-generated from data)
+        self.category_keywords = defaultdict(set)  # category -> {keywords}
 
         # Load and index data
         self.load_knowledge_base()
         self.build_indexes()
 
-    # Tải lên Knowledge base
+    # Tải lên knowledge base
     def load_knowledge_base(self) -> bool:
-        """
-        Load knowledge base from JSON file
+        """Load knowledge data from JSON file safely"""
+        if not os.path.exists(self.data_file_path):
+            print(f"[Warning] Data file not found: {self.data_file_path}")
+            return False
 
-        Returns:
-            bool: Success status
-        """
         try:
-            with open(self.data_file_path, 'r', encoding='utf-8') as file:
-                self.knowledge_data = json.load(file)
-                self.questions = self.knowledge_data.get('knowledge_base', [])
-                self.categories = self.knowledge_data.get('categories_description', {})
-                print(f"✅ Loaded {len(self.questions)} questions from knowledge base")
+            with open(self.data_file_path, "r", encoding="utf-8") as f:
+                self.knowledge_data = json.load(f)
+                # Correct key for railway_data.json structure
+                self.questions = self.knowledge_data.get("knowledge_base", [])
+                self.categories = set(item.get("category") for item in self.questions if item.get("category"))
+                print(f"✅ Loaded {len(self.questions)} questions successfully")
                 return True
-        except FileNotFoundError:
-            print(f"❌ Knowledge base file not found: {self.data_file_path}")
-            return False
-        except json.JSONDecodeError as e:
-            print(f"❌ Error parsing JSON: {e}")
-            return False
-        except Exception as e:
-            print(f"❌ Error loading knowledge base: {e}")
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"[Error] Failed to load data: {e}")
+            self.knowledge_data = {}
+            self.questions = []
+            self.categories = set()
             return False
 
     # Tạo index để truy xuất nhanh hơn
     def build_indexes(self):
-        """
-        Build search indexes for faster retrieval
-        """
+        """Build optimized search indexes for faster retrieval with TF-IDF calculation"""
+        # Clear existing indexes
         self.keyword_index.clear()
-        self.language_index = {"vi": [], "en": []}
+        self.id_index.clear()
+        self.category_index.clear()
+        self.category_keywords.clear()
+        self.language_index.clear()
+        self.keyword_document_frequency.clear()
+
+        self.total_documents = len(self.questions)
+        if self.total_documents == 0:
+            print("[Warning] No questions to index")
+            return
 
         for idx, item in enumerate(self.questions):
-            # Language index
+            # ID index for O(1) lookup
+            item_id = item.get('id')
+            if item_id is not None:
+                self.id_index[item_id] = item
+
+            # Language index - dynamic languages
             language = item.get('language', 'vi')
             self.language_index[language].append(idx)
 
-            # Keyword index
+            # Category index for O(1) lookup
+            category = item.get('category')
+            if category:
+                self.category_index[category].append(item)
+
+            # Extract ALL keywords from this document
+            all_keywords = set()
+
+            # 1. Keywords from metadata
             keywords = item.get('keywords', [])
             for keyword in keywords:
                 normalized_keyword = self.normalize_text(keyword)
-                self.keyword_index[normalized_keyword].append(idx)
+                if normalized_keyword:
+                    all_keywords.add(normalized_keyword)
 
-            # Also index question and answer text
+            # 2. Keywords from question text
             question_words = self.extract_keywords(item.get('question', ''))
+            all_keywords.update(question_words)
+
+            # 3. Keywords from answer text
             answer_words = self.extract_keywords(item.get('answer', ''))
+            all_keywords.update(answer_words)
 
-            for word in question_words + answer_words:
-                if len(word) > 2:  # Skip very short words
-                    self.keyword_index[word].append(idx)
+            # Build keyword index
+            for keyword in all_keywords:
+                if len(keyword) > 2:  # Skip very short words
+                    self.keyword_index[keyword].append(idx)
 
-        print(
-            f"✅ Built indexes: {len(self.keyword_index)} keywords, {sum(len(v) for v in self.language_index.values())} language entries")
+            # Update document frequency for TF-IDF
+            for keyword in all_keywords:
+                self.keyword_document_frequency[keyword] += 1
+
+            # Build dynamic category keywords
+            if category:
+                self.category_keywords[category].update(all_keywords)
+
+        print(f"✅ Built optimized indexes:")
+        print(f"   - {len(self.keyword_index)} keywords indexed")
+        print(f"   - {len(self.id_index)} IDs indexed")
+        print(f"   - {len(self.category_index)} categories indexed")
+        print(f"   - {len(self.language_index)} languages supported: {list(self.language_index.keys())}")
+        print(f"   - Language distribution: {dict((lang, len(indices)) for lang, indices in self.language_index.items())}")
+        print(f"   - Auto-generated category keywords: {list(self.category_keywords.keys())}")
 
     # Chuẩn hóa Tiếng Việt để phù hợp hơn cho việc so sánh
     def normalize_text(self, text: str) -> str:
@@ -122,7 +182,7 @@ class RailwayKnowledgeBase:
     # Trích xuất keywords
     def extract_keywords(self, text: str) -> List[str]:
         """
-        Extract keywords from text
+        Extract keywords from text with stop word filtering
 
         Args:
             text: Input text
@@ -136,20 +196,43 @@ class RailwayKnowledgeBase:
         normalized = self.normalize_text(text)
         words = normalized.split()
 
-        # Filter out common stop words
+        # Enhanced stop words for Vietnamese and English
         stop_words = {
+            # Vietnamese stop words
             'la', 'cua', 'va', 'co', 'khong', 'thi', 'se', 'duoc', 'nhu', 'theo',
             'trong', 'ngoai', 'tren', 'duoi', 'sau', 'truoc', 'giua', 'ben',
-            'the', 'is', 'are', 'was', 'were', 'and', 'or', 'but', 'in', 'on', 'at'
+            'voi', 'cho', 'den', 'tu', 'khi', 'ma', 'neu', 'vi', 'boi', 'qua',
+            # English stop words
+            'the', 'is', 'are', 'was', 'were', 'and', 'or', 'but', 'in', 'on', 'at',
+            'to', 'for', 'of', 'with', 'by', 'from', 'up', 'about', 'into', 'through'
         }
 
         keywords = [word for word in words if len(word) > 2 and word not in stop_words]
         return keywords
 
+    # Get tf-idf score(vector score)
+    def get_tf_idf_score(self, keyword: str) -> float:
+        """
+        Calculate TF-IDF score for a keyword
+
+        Args:
+            keyword: The keyword to calculate score for
+
+        Returns:
+            float: TF-IDF score (higher = more important/rare)
+        """
+        if keyword not in self.keyword_document_frequency or self.total_documents == 0:
+            return 0.0
+
+        # IDF = log(total_docs / docs_containing_term)
+        # Add 1 to avoid division by zero
+        idf = math.log(self.total_documents / (1 + self.keyword_document_frequency[keyword]))
+        return max(0.1, idf)  # Minimum score to avoid zero weights
+
     # Search for keyword
     def keyword_search(self, query: str, language: str = 'vi', limit: int = 5) -> List[Dict]:
         """
-        Search using keyword matching
+        Enhanced keyword search with TF-IDF scoring
 
         Args:
             query: Search query
@@ -163,16 +246,22 @@ class RailwayKnowledgeBase:
         if not query_keywords:
             return []
 
-        # Score each question
+        # Score each question with TF-IDF weighting
         scores = defaultdict(float)
 
         for keyword in query_keywords:
             if keyword in self.keyword_index:
+                # Get TF-IDF weight for this keyword
+                keyword_weight = self.get_tf_idf_score(keyword)
+
                 for idx in self.keyword_index[keyword]:
                     # Prefer same language
                     item = self.questions[idx]
                     language_bonus = 1.5 if item.get('language') == language else 1.0
-                    scores[idx] += language_bonus
+
+                    # Apply TF-IDF weighting
+                    weighted_score = keyword_weight * language_bonus
+                    scores[idx] += weighted_score
 
         # Sort by score and return top results
         sorted_results = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:limit]
@@ -181,7 +270,7 @@ class RailwayKnowledgeBase:
         for idx, score in sorted_results:
             item = self.questions[idx].copy()
             item['search_score'] = score
-            item['search_method'] = 'keyword'
+            item['search_method'] = 'keyword_tfidf'
             results.append(item)
 
         return results
@@ -201,7 +290,7 @@ class RailwayKnowledgeBase:
 
     def fuzzy_search(self, query: str, language: str = 'vi', limit: int = 5, threshold: float = 0.3) -> List[Dict]:
         """
-        Fuzzy matching search
+        Enhanced fuzzy matching search with fuzzywuzzy or SequenceMatcher fallback
 
         Args:
             query: Search query
@@ -215,28 +304,44 @@ class RailwayKnowledgeBase:
         normalized_query = self.normalize_text(query)
         results = []
 
-        # Get questions in preferred language first
-        candidate_indices = self.language_index.get(language, []) + self.language_index.get(
-            'vi' if language != 'vi' else 'en', [])
+        # Get questions in preferred language first, then fallback
+        candidate_indices = (self.language_index.get(language, []) +
+                             self.language_index.get('vi' if language != 'vi' else 'en', []))
 
-        for idx in candidate_indices[:50]:  # Limit candidates for performance
+        # Limit candidates for performance but be smarter about selection
+        max_candidates = min(100, len(candidate_indices))
+        candidate_indices = candidate_indices[:max_candidates]
+
+        for idx in candidate_indices:
             item = self.questions[idx]
             question = self.normalize_text(item.get('question', ''))
 
-            # Calculate similarity
-            similarity = SequenceMatcher(None, normalized_query, question).ratio()
+            # Calculate similarity using fuzzywuzzy if available
+            if FUZZYWUZZY_AVAILABLE:
+                similarity = fuzz.ratio(normalized_query, question) / 100.0
+                # Also check keywords with fuzzywuzzy
+                keywords = ' '.join(item.get('keywords', []))
+                keyword_similarity = fuzz.partial_ratio(normalized_query, self.normalize_text(keywords)) / 100.0
+            else:
+                # Fallback to SequenceMatcher
+                similarity = SequenceMatcher(None, normalized_query, question).ratio()
+                keywords = ' '.join(item.get('keywords', []))
+                keyword_similarity = SequenceMatcher(None, normalized_query, self.normalize_text(keywords)).ratio()
 
-            # Also check keywords
-            keywords = ' '.join(item.get('keywords', []))
-            keyword_similarity = SequenceMatcher(None, normalized_query, self.normalize_text(keywords)).ratio()
-
-            # Combined score
+            # Combined score with weighted keyword importance
             combined_score = max(similarity, keyword_similarity * 0.8)
+
+            # Boost score for exact keyword matches
+            query_words = set(normalized_query.split())
+            question_words = set(question.split())
+            exact_matches = len(query_words.intersection(question_words))
+            if exact_matches > 0:
+                combined_score += exact_matches * 0.1
 
             if combined_score >= threshold:
                 item_copy = item.copy()
                 item_copy['search_score'] = combined_score
-                item_copy['search_method'] = 'fuzzy'
+                item_copy['search_method'] = 'fuzzy_enhanced'
                 results.append(item_copy)
 
         # Sort by score and return top results
@@ -246,7 +351,7 @@ class RailwayKnowledgeBase:
     # Tìm kiếm phân loại
     def category_search(self, query: str, language: str = 'vi', limit: int = 5) -> List[Dict]:
         """
-        Search by category relevance
+        Dynamic category search using auto-generated category keywords
 
         Args:
             query: Search query
@@ -256,43 +361,42 @@ class RailwayKnowledgeBase:
         Returns:
             List[Dict]: Matching results with scores
         """
-        query_keywords = self.extract_keywords(query)
+        query_keywords = set(self.extract_keywords(query))
         if not query_keywords:
             return []
 
-        # Category keyword mapping
-        category_keywords = {
-            'booking': ['dat ve', 'mua ve', 'book', 'reserve', 'online', 'app', 'website'],
-            'schedule': ['lich tau', 'thoi gian', 'bao lau', 'schedule', 'time', 'duration'],
-            'pricing': ['gia ve', 'cost', 'price', 'tien', 'khuyen mai', 'discount'],
-            'stations': ['ga', 'station', 'dia chi', 'address', 'location'],
-            'services': ['dich vu', 'wifi', 'do an', 'toilet', 'service', 'food'],
-            'cancellation': ['huy ve', 'cancel', 'hoan tien', 'refund'],
-            'support': ['hotline', 'support', 'help', 'lien he', 'contact']
-        }
-
-        # Find relevant categories
+        # Calculate category relevance using dynamic keywords
         category_scores = defaultdict(float)
-        for keyword in query_keywords:
-            for category, cat_keywords in category_keywords.items():
-                for cat_keyword in cat_keywords:
-                    if keyword in self.normalize_text(cat_keyword):
-                        category_scores[category] += 1
 
-        # Get questions from relevant categories
+        for category, cat_keywords in self.category_keywords.items():
+            # Calculate overlap between query keywords and category keywords
+            overlap = len(query_keywords.intersection(cat_keywords))
+            if overlap > 0:
+                # Score based on overlap percentage and TF-IDF
+                overlap_ratio = overlap / len(query_keywords)
+
+                # Add TF-IDF weighting for matched keywords
+                tfidf_bonus = 0
+                for keyword in query_keywords.intersection(cat_keywords):
+                    tfidf_bonus += self.get_tf_idf_score(keyword)
+
+                category_scores[category] = overlap_ratio + (tfidf_bonus * 0.1)
+
+        # Get questions from relevant categories using O(1) lookup
         results = []
         for category, score in sorted(category_scores.items(), key=lambda x: x[1], reverse=True):
-            category_questions = [q for q in self.questions if q.get('category') == category]
+            category_questions = self.category_index.get(category, [])
 
             # Prefer same language
             lang_questions = [q for q in category_questions if q.get('language') == language]
             if not lang_questions:
                 lang_questions = category_questions
 
-            for item in lang_questions[:2]:  # Top 2 per category
+            # Take top 2 per category to ensure diversity
+            for item in lang_questions[:2]:
                 item_copy = item.copy()
                 item_copy['search_score'] = score
-                item_copy['search_method'] = 'category'
+                item_copy['search_method'] = 'category_dynamic'
                 results.append(item_copy)
 
         return results[:limit]
@@ -340,7 +444,7 @@ class RailwayKnowledgeBase:
 
     def hybrid_search(self, query: str, language: str = 'vi', limit: int = 5) -> List[Dict]:
         """
-        Hybrid search combining multiple methods
+        Hybrid search combining multiple methods with intelligent weighting
 
         Args:
             query: Search query
@@ -359,12 +463,14 @@ class RailwayKnowledgeBase:
         combined_results = {}
 
         # Weight different search methods
-        weights = {'keyword': 1.0, 'fuzzy': 0.8, 'category': 0.6}
+        weights = {'keyword_tfidf': 1.0, 'fuzzy_enhanced': 0.8, 'category_dynamic': 0.6}
 
-        for results, method in [(keyword_results, 'keyword'), (fuzzy_results, 'fuzzy'), (category_results, 'category')]:
+        for results, base_method in [(keyword_results, 'keyword'), (fuzzy_results, 'fuzzy'),
+                                     (category_results, 'category')]:
             for result in results:
                 idx = result.get('id', 0)
-                score = result.get('search_score', 0) * weights[method]
+                method = result.get('search_method', base_method)
+                score = result.get('search_score', 0) * weights.get(method, 0.5)
 
                 if idx in combined_results:
                     # Boost score if found by multiple methods
@@ -384,7 +490,7 @@ class RailwayKnowledgeBase:
     # Truy xuất câu hỏi by ID
     def get_by_id(self, question_id: int) -> Optional[Dict]:
         """
-        Get question by ID
+        Get question by ID using O(1) lookup
 
         Args:
             question_id: Question ID
@@ -392,15 +498,12 @@ class RailwayKnowledgeBase:
         Returns:
             Optional[Dict]: Question data or None
         """
-        for item in self.questions:
-            if item.get('id') == question_id:
-                return item
-        return None
+        return self.id_index.get(question_id)
 
-    # Truy xuất câu hỏi theo Category
+    # Truy xuất câu hỏi by Categories
     def get_by_category(self, category: str, language: str = 'vi', limit: int = 10) -> List[Dict]:
         """
-        Get questions by category
+        Get questions by category using O(1) lookup
 
         Args:
             category: Category name
@@ -410,15 +513,21 @@ class RailwayKnowledgeBase:
         Returns:
             List[Dict]: Questions in category
         """
-        results = []
-        for item in self.questions:
-            if item.get('category') == category:
-                # Prefer same language
-                if item.get('language') == language:
-                    results.insert(0, item)
-                else:
-                    results.append(item)
+        category_questions = self.category_index.get(category, [])
 
+        # Prefer same language
+        results = []
+        same_lang = []
+        other_lang = []
+
+        for item in category_questions:
+            if item.get('language') == language:
+                same_lang.append(item)
+            else:
+                other_lang.append(item)
+
+        # Combine with same language first
+        results = same_lang + other_lang
         return results[:limit]
 
     # Truy xuất các câu hỏi trương đồng dựa trên category và keywords
@@ -483,7 +592,7 @@ class RailwayKnowledgeBase:
 
     def get_stats(self) -> Dict[str, Any]:
         """
-        Get knowledge base statistics
+        Get comprehensive knowledge base statistics
 
         Returns:
             Dict: Statistics information
@@ -496,7 +605,7 @@ class RailwayKnowledgeBase:
             'confidence_thresholds': []
         }
 
-        # Category stats
+        # Category and language stats
         for item in self.questions:
             category = item.get('category', 'unknown')
             language = item.get('language', 'unknown')
@@ -525,10 +634,10 @@ class RailwayKnowledgeBase:
 
     def validate_knowledge_base(self) -> Dict[str, List[str]]:
         """
-        Validate knowledge base for issues
+        Validate knowledge base for potential issues
 
         Returns:
-            Dict: Validation results
+            Dict: Validation results with detailed issues
         """
         issues = {
             'missing_fields': [],
@@ -567,9 +676,70 @@ class RailwayKnowledgeBase:
         return issues
 
 
-# Example usage and testing functions
+# Utility functions for testing and benchmarking
+def install_dependencies():
+    """Install recommended dependencies for optimal performance"""
+    try:
+        import subprocess
+        import sys
+
+        print("📦 Installing recommended dependencies...")
+
+        # Try to install fuzzywuzzy for better fuzzy search
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "fuzzywuzzy", "python-Levenshtein"])
+            print("✅ Installed fuzzywuzzy with C extensions for fast fuzzy matching")
+        except Exception as e:
+            print(f"⚠️ Could not install fuzzywuzzy: {e}")
+            print("   Fuzzy search will use slower SequenceMatcher fallback")
+
+    except Exception as e:
+        print(f"❌ Error installing dependencies: {e}")
+
+
+def performance_benchmark(kb: RailwayKnowledgeBase):
+    """Benchmark different search methods"""
+    print("⚡ Performance Benchmark")
+    print("=" * 40)
+
+    if not kb.questions:
+        print("❌ No knowledge base loaded for benchmark")
+        return
+
+    test_queries = [
+        "đặt vé tàu online",
+        "giá vé Hà Nội TP.HCM",
+        "lịch tàu Sài Gòn",
+        "hủy vé hoàn tiền",
+        "ga tàu địa chỉ"
+    ]
+
+    methods = ['keyword', 'fuzzy', 'category', 'hybrid']
+
+    for method in methods:
+        start_time = time.time()
+        total_results = 0
+
+        for query in test_queries:
+            results = kb.search(query, method=method, limit=5)
+            total_results += len(results)
+
+        end_time = time.time()
+        avg_time = (end_time - start_time) / len(test_queries) * 1000
+
+        print(f"{method:12}: {avg_time:6.2f}ms/query | {total_results} total results")
+
+    # Test optimized lookups
+    start_time = time.time()
+    for i in range(1, min(46, len(kb.questions) + 1)):
+        kb.get_by_id(i)
+    end_time = time.time()
+    id_lookup_time = (end_time - start_time) / min(45, len(kb.questions)) * 1000
+    print(f"{'ID lookup':12}: {id_lookup_time:6.2f}ms/query (O(1) optimized)")
+
+
 def test_knowledge_base():
-    """Test the knowledge base functionality"""
+    """Comprehensive test of the knowledge base functionality"""
     print("🧪 Testing Railway Knowledge Base Engine")
     print("=" * 50)
 
@@ -593,26 +763,74 @@ def test_knowledge_base():
         print(f"\n🔍 Query: '{query}'")
         print("-" * 30)
 
-        # Test hybrid search
+        # Test hybrid search with enhanced scoring
         results = kb.search(query, method='hybrid', limit=3)
 
         if results:
             for i, result in enumerate(results, 1):
-                print(f"{i}. ID: {result.get('id')} | Score: {result.get('search_score', 0):.2f}")
-                print(f"    Q: {result.get('question', '')[:80]}...")
-                print(f"    Method: {result.get('search_method', '')}")
-                print(f"    Answer: {result.get('answer', '')}")
+                print(f"{i}. ID: {result.get('id')} | Score: {result.get('search_score', 0):.3f}")
+                print(f"   Q: {result.get('question', '')[:80]}...")
+                print(f"   Method: {result.get('search_method', '')}")
                 print()
         else:
             print("   No results found")
+
+    # Test optimized lookups
+    print("\n🚀 Testing Optimized Lookups:")
+    print("-" * 30)
+
+    # Test ID lookup
+    test_item = kb.get_by_id(1)
+    if test_item:
+        print(f"✅ ID lookup (O(1)): {test_item.get('question', '')[:60]}...")
+
+    # Test category lookup
+    booking_questions = kb.get_by_category('booking', limit=3)
+    print(f"✅ Category lookup (O(1)): Found {len(booking_questions)} booking questions")
 
     # Print statistics
     print("\n📊 Knowledge Base Statistics:")
     print("-" * 30)
     stats = kb.get_stats()
     for key, value in stats.items():
-        print(f"{key}: {value}")
+        if isinstance(value, dict):
+            print(f"{key}:")
+            for k, v in value.items():
+                print(f"  {k}: {v}")
+        elif isinstance(value, list):
+            print(f"{key}: {len(value)} items")
+        else:
+            print(f"{key}: {value}")
+
+    # Validation
+    print("\n🔍 Knowledge Base Validation:")
+    print("-" * 30)
+    issues = kb.validate_knowledge_base()
+    total_issues = sum(len(issue_list) for issue_list in issues.values())
+
+    if total_issues == 0:
+        print("✅ No issues found - knowledge base is healthy!")
+    else:
+        for issue_type, issue_list in issues.items():
+            if issue_list:
+                print(f"⚠️ {issue_type}: {len(issue_list)} issues")
+                for issue in issue_list[:3]:  # Show first 3 issues
+                    print(f"   - {issue}")
+                if len(issue_list) > 3:
+                    print(f"   ... and {len(issue_list) - 3} more")
+
+    # Run performance benchmark
+    print("\n" + "=" * 50)
+    performance_benchmark(kb)
+
+    return kb
 
 
 if __name__ == "__main__":
+    # Uncomment to install dependencies
+    if not FUZZYWUZZY_AVAILABLE:
+        print("💡 For optimal performance, consider installing fuzzywuzzy:")
+        print("   pip install fuzzywuzzy python-Levenshtein")
+        print()
+
     test_knowledge_base()
